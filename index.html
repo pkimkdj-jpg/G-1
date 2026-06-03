@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
     <title>Shader Gradient Background</title>
@@ -8,16 +7,11 @@
     </style>
 </head>
 <body>
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.165.0/build/three.module.js"
-            }
-        }
-    </script>
-    <script type="module">
-        import * as THREE from 'three';
+    <!-- Loads the graphics library -->
+    <script src="https://unpkg.com/three@0.165.0/build/three.min.js"></script>
 
+    <!-- The main script that creates the animation -->
+    <script>
         // --- Parameters from your shadergradient.co URL ---
         const config = {
             color1: '#94ffd1',
@@ -35,7 +29,6 @@
         let camera, scene, renderer, material;
         const clock = new THREE.Clock();
 
-        // Vertex Shader - Handles the geometry/position of the plane
         const vertexShader = `
             varying vec2 vUv;
             void main() {
@@ -44,7 +37,6 @@
             }
         `;
 
-        // Fragment Shader - Handles the color and visual effect
         const fragmentShader = `
             uniform float uTime;
             uniform vec3 uColor1;
@@ -55,7 +47,6 @@
             
             varying vec2 vUv;
 
-            // 2D Noise function to create the watery effect
             float noise(vec2 p) {
                 return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
             }
@@ -73,12 +64,9 @@
 
             void main() {
                 vec2 p = vUv * uDensity;
-                float- t = uTime * 0.1;
-
-                // Create a flowing, distorted time effect for the noise
+                float t = uTime * 0.1;
                 float distortedTime = FBM(p + t);
                 
-                // Mix the base colors
                 vec3 baseColor = mix(uColor1, uColor2, vUv.y + distortedTime * 0.1);
                 vec3 finalColor = mix(baseColor, uColor3, FBM(p - t) * uStrength);
 
@@ -112,7 +100,6 @@
             const mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
 
-            // Set camera position based on your URL parameters
             const polar = THREE.MathUtils.degToRad(config.cPolarAngle);
             const azimuth = THREE.MathUtils.degToRad(config.cAzimuthAngle);
             const r = config.cDistance;
