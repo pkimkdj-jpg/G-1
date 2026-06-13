@@ -22,15 +22,22 @@
     { color1: '#00c75a', color2: '#0b8800', color3: '#005d1a' }
   ];
 
+  let currentIndex = 0;
+
+  window.addEventListener('message', (event) => {
+    console.log('Message received:', event.data);
+    if (event.data && event.data.type === 'gradient:nextColor') {
+      currentIndex = (currentIndex + 1) % COLORS.length;
+      window.__setGradientColor && window.__setGradientColor(currentIndex);
+    }
+  });
+
   const App = () => {
     const [colorIndex, setColorIndex] = useState(0);
 
     useEffect(() => {
-      window.addEventListener('message', (event) => {
-        if (event.data.type === 'gradient:nextColor') {
-          setColorIndex((prev) => (prev + 1) % COLORS.length);
-        }
-      });
+      window.__setGradientColor = setColorIndex;
+      return () => { window.__setGradientColor = null; };
     }, []);
 
     const current = COLORS[colorIndex];
@@ -53,6 +60,7 @@
       })
     );
   };
+
   createRoot(document.getElementById('root')).render(React.createElement(App));
 </script>
 </body>
