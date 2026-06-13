@@ -27,7 +27,6 @@
 
     useEffect(() => {
       window.addEventListener('message', (event) => {
-        console.log('[Gradient received message]:', event.data);
         if (event.data.type === 'gradient:nextColor') {
           setColorIndex((prev) => (prev + 1) % COLORS.length);
         }
